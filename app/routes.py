@@ -5,6 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from app import app, db
+from app.email import send_password_reset_email
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User, Post
 
@@ -165,10 +166,10 @@ def explore():
     prev_url = url_for('index', page=posts.prev_num) \
         if posts.has_prev else None
 
-    return render_template('index.html', title='Explore', posts=posts, next_url=next_url, prev_url=prev_url)
+    return render_template('index.html', title='Explore', posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
-@app.route('/reset_password_request', method=['GET', 'POST'])
+@app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
